@@ -326,4 +326,57 @@ def test_purchase_vehicle():
 
     data = response.json()
 
-    assert data["quantity"] == 4          
+    assert data["quantity"] == 4   
+def test_restock_vehicle():
+
+    # Register
+    client.post(
+        "/api/auth/register",
+        json={
+            "username": "admin",
+            "email": "admin@example.com",
+            "password": "password123"
+        }
+    )
+
+    # Login
+    login = client.post(
+        "/api/auth/login",
+        json={
+            "email": "admin@example.com",
+            "password": "password123"
+        }
+    )
+
+    token = login.json()["access_token"]
+
+    # Add Vehicle
+    add_response = client.post(
+        "/api/vehicles",
+        json={
+            "make": "Toyota",
+            "model": "Fortuner",
+            "category": "SUV",
+            "price": 45000,
+            "quantity": 5
+        },
+        headers={
+            "Authorization": f"Bearer {token}"
+        }
+    )
+
+    vehicle_id = add_response.json()["id"]
+
+    # Restock
+    response = client.put(
+        f"/api/vehicles/{vehicle_id}/restock?quantity=10",
+        headers={
+            "Authorization": f"Bearer {token}"
+        }
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["quantity"] == 15           

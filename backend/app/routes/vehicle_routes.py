@@ -183,3 +183,29 @@ def purchase_vehicle(
     db.refresh(vehicle)
 
     return vehicle
+@router.put(
+    "/{vehicle_id}/restock",
+    response_model=VehicleResponse
+)
+def restock_vehicle(
+    vehicle_id: int,
+    quantity: int,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    vehicle = db.query(Vehicle).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    if not vehicle:
+        raise HTTPException(
+            status_code=404,
+            detail="Vehicle not found"
+        )
+
+    vehicle.quantity += quantity
+
+    db.commit()
+    db.refresh(vehicle)
+
+    return vehicle
