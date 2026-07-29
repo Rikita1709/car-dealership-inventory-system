@@ -141,3 +141,31 @@ def delete_vehicle(
     return {
         "message": "Vehicle deleted successfully"
     }
+@router.post("/{vehicle_id}/purchase")
+def purchase_vehicle(
+    vehicle_id: int,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    vehicle = db.query(Vehicle).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    if not vehicle:
+        raise HTTPException(
+            status_code=404,
+            detail="Vehicle not found"
+        )
+
+    if vehicle.quantity <= 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Vehicle is out of stock"
+        )
+
+    vehicle.quantity -= 1
+
+    db.commit()
+    db.refresh(vehicle)
+
+    return vehicle
