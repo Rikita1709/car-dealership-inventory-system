@@ -87,6 +87,21 @@ def search_vehicles(
         query = query.filter(Vehicle.price <= max_price)
 
     return query.all()
+@router.get(
+    "/low-stock",
+    response_model=list[VehicleResponse]
+)
+def low_stock_vehicles(
+    db: Session = Depends(get_db),
+    user=Depends(get_current_user)
+):
+    vehicles = (
+        db.query(Vehicle)
+        .filter(Vehicle.quantity <= 2)
+        .all()
+    )
+
+    return vehicles
 @router.put(
     "/{vehicle_id}",
     response_model=VehicleResponse
