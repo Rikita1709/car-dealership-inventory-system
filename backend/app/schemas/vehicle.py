@@ -19,3 +19,5 @@ class VehicleResponse(BaseModel):
 
     class Config:
         from_attributes = True
+class VehicleUpdate(VehicleCreate):
+    pass        

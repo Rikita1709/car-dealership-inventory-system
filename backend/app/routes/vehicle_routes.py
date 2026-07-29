@@ -1,8 +1,18 @@
-from fastapi import APIRouter, Depends, status, Query
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    Query,
+    status,
+)
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.schemas.vehicle import VehicleCreate, VehicleResponse
+from app.schemas.vehicle import (
+    VehicleCreate,
+    VehicleUpdate,
+    VehicleResponse,
+)
 from app.models.vehicle import Vehicle
 from app.auth.dependencies import get_current_user
 from typing import List
@@ -75,3 +85,34 @@ def search_vehicles(
         query = query.filter(Vehicle.price <= max_price)
 
     return query.all()
+@router.put(
+    "/{vehicle_id}",
+    response_model=VehicleResponse
+)
+def update_vehicle(
+    vehicle_id: int,
+    vehicle: VehicleUpdate,
+    db: Session = Depends(get_db),
+    user=Depends(get_current_user)
+):
+
+    db_vehicle = db.query(Vehicle).filter(
+        Vehicle.id == vehicle_id
+    ).first()
+
+    if not db_vehicle:
+        raise HTTPException(
+            status_code=404,
+            detail="Vehicle not found"
+        )
+
+    db_vehicle.make = vehicle.make
+    db_vehicle.model = vehicle.model
+    db_vehicle.category = vehicle.category
+    db_vehicle.price = vehicle.price
+    db_vehicle.quantity = vehicle.quantity
+
+    db.commit()
+    db.refresh(db_vehicle)
+
+    return db_vehicle
