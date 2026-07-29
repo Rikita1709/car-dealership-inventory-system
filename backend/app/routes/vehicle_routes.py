@@ -14,6 +14,8 @@ from app.schemas.vehicle import (
     VehicleResponse,
 )
 from app.models.vehicle import Vehicle
+from app.models.purchase import Purchase
+from app.models.user import User
 from app.auth.dependencies import get_current_user
 from typing import List
 
@@ -165,7 +167,19 @@ def purchase_vehicle(
 
     vehicle.quantity -= 1
 
+    user = db.query(User).filter(
+    User.email == current_user["sub"]
+).first()
+
+    purchase = Purchase(
+    vehicle_id=vehicle.id,
+    user_id=user.id
+)
+
+    db.add(purchase)
+
     db.commit()
+
     db.refresh(vehicle)
 
     return vehicle
