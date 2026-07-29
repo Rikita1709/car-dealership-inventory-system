@@ -1,8 +1,4 @@
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-client = TestClient(app)
+from conftest import client
 
 
 def test_home():
@@ -26,6 +22,15 @@ def test_register_user():
     assert response.status_code == 201   
 def test_login_user():
 
+    client.post(
+        "/api/auth/register",
+        json={
+            "username": "rikita",
+            "email": "rikita@example.com",
+            "password": "password123"
+        }
+    )
+
     response = client.post(
         "/api/auth/login",
         json={
@@ -39,4 +44,4 @@ def test_login_user():
     data = response.json()
 
     assert "access_token" in data
-    assert data["token_type"] == "bearer"   
+    assert data["token_type"] == "bearer"
