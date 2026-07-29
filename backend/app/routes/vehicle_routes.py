@@ -52,19 +52,40 @@ def add_vehicle(
 def get_all_vehicles(
     sort_by: str = Query(default=None),
     order: str = Query(default="asc"),
+    page: int = Query(default=1, ge=1),
+    limit: int = Query(default=10, ge=1),
     db: Session = Depends(get_db),
     user=Depends(get_current_user)
 ):
 
     query = db.query(Vehicle)
 
+    # Sorting
     if sort_by == "price":
         if order == "desc":
             query = query.order_by(Vehicle.price.desc())
         else:
             query = query.order_by(Vehicle.price.asc())
 
-    vehicles = query.all()
+    elif sort_by == "quantity":
+        if order == "desc":
+            query = query.order_by(Vehicle.quantity.desc())
+        else:
+            query = query.order_by(Vehicle.quantity.asc())
+
+    elif sort_by == "make":
+        if order == "desc":
+            query = query.order_by(Vehicle.make.desc())
+        else:
+            query = query.order_by(Vehicle.make.asc())
+
+    # Pagination
+    vehicles = (
+        query
+        .offset((page - 1) * limit)
+        .limit(limit)
+        .all()
+    )
 
     return vehicles
 @router.get(

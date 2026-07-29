@@ -505,4 +505,55 @@ def test_sort_vehicles():
 
     data = response.json()
 
-    assert data[0]["price"] <= data[1]["price"]               
+    assert data[0]["price"] <= data[1]["price"]   
+def test_vehicle_pagination():
+
+    # Register
+    client.post(
+        "/api/auth/register",
+        json={
+            "username": "admin",
+            "email": "admin@example.com",
+            "password": "password123"
+        }
+    )
+
+    # Login
+    login = client.post(
+        "/api/auth/login",
+        json={
+            "email": "admin@example.com",
+            "password": "password123"
+        }
+    )
+
+    token = login.json()["access_token"]
+
+    # Add 5 vehicles
+    for i in range(5):
+        client.post(
+            "/api/vehicles",
+            json={
+                "make": f"Brand{i}",
+                "model": f"Model{i}",
+                "category": "SUV",
+                "price": 10000 + i * 1000,
+                "quantity": 5
+            },
+            headers={
+                "Authorization": f"Bearer {token}"
+            }
+        )
+
+    response = client.get(
+        "/api/vehicles?page=1&limit=2",
+        headers={
+            "Authorization": f"Bearer {token}"
+        }
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert len(data) == 2                
