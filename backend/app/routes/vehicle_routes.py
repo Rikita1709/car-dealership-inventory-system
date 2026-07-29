@@ -50,10 +50,22 @@ def add_vehicle(
     response_model=List[VehicleResponse]
 )
 def get_all_vehicles(
+    sort_by: str = Query(default=None),
+    order: str = Query(default="asc"),
     db: Session = Depends(get_db),
     user=Depends(get_current_user)
 ):
-    vehicles = db.query(Vehicle).all()
+
+    query = db.query(Vehicle)
+
+    if sort_by == "price":
+        if order == "desc":
+            query = query.order_by(Vehicle.price.desc())
+        else:
+            query = query.order_by(Vehicle.price.asc())
+
+    vehicles = query.all()
+
     return vehicles
 @router.get(
     "/search",

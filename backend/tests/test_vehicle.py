@@ -445,4 +445,64 @@ def test_low_stock_vehicles():
     data = response.json()
 
     assert len(data) == 1
-    assert data[0]["make"] == "Toyota"              
+    assert data[0]["make"] == "Toyota"   
+def test_sort_vehicles():
+
+    # Register
+    client.post(
+        "/api/auth/register",
+        json={
+            "username": "admin",
+            "email": "admin@example.com",
+            "password": "password123"
+        }
+    )
+
+    # Login
+    login = client.post(
+        "/api/auth/login",
+        json={
+            "email": "admin@example.com",
+            "password": "password123"
+        }
+    )
+
+    token = login.json()["access_token"]
+
+    # Vehicle 1
+    client.post(
+        "/api/vehicles",
+        json={
+            "make": "Toyota",
+            "model": "Fortuner",
+            "category": "SUV",
+            "price": 45000,
+            "quantity": 5
+        },
+        headers={"Authorization": f"Bearer {token}"}
+    )
+
+    # Vehicle 2
+    client.post(
+        "/api/vehicles",
+        json={
+            "make": "Honda",
+            "model": "City",
+            "category": "Sedan",
+            "price": 25000,
+            "quantity": 8
+        },
+        headers={"Authorization": f"Bearer {token}"}
+    )
+
+    # Sort by price ascending
+    response = client.get(
+        "/api/vehicles?sort_by=price&order=asc",
+        headers={"Authorization": f"Bearer {token}"}
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data[0]["price"] <= data[1]["price"]               
