@@ -24,3 +24,19 @@ def test_register_user():
     )
 
     assert response.status_code == 201   
+def test_login_user():
+
+    response = client.post(
+        "/api/auth/login",
+        json={
+            "email": "rikita@example.com",
+            "password": "password123"
+        }
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert "access_token" in data
+    assert data["token_type"] == "bearer"   
