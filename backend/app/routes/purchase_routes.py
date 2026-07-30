@@ -36,6 +36,7 @@ def get_purchase_history(
 
         data.append({
             "id": purchase.id,
+            "vehicle_id": purchase.vehicle_id,
             "make": vehicle.make,
             "model": vehicle.model,
             "category": vehicle.category,

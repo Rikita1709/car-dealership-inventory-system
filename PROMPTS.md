@@ -1,17 +1,33 @@
-# AI Prompt History
+# AI Assistance & Development Prompts
 
-This document records all AI prompts used during the development of this assessment.
+AI tools were used as development assistants throughout the project.
 
----
+## Areas Where AI Was Used
 
-## Prompt 1
+### Backend Development
+- FastAPI route structure
+- JWT authentication implementation
+- SQLAlchemy model and query assistance
+- API debugging
 
-Project planning, technology selection, architecture discussion, Git workflow planning, and TDD strategy.
+### Frontend Development
+- React component structure
+- React Router configuration
+- Axios API integration
+- UI implementation using Tailwind CSS
+- Debugging frontend errors
 
-### AI Tool
+### Testing & Debugging
+- Identifying HTTP 401 authentication issues
+- Debugging CORS configuration
+- Resolving React Router configuration issues
+- Troubleshooting frontend/backend API communication
 
-ChatGPT
+### Documentation
+- README structure
+- API documentation
+- Project setup instructions
 
-### Usage
+## Important Note
 
-Used for discussing project architecture, selecting FastAPI as the backend framework, planning the Git workflow, and understanding the assessment requirements.
+AI assistance was used as a development aid. The author reviewed, integrated, tested, debugged, and deployed the resulting implementation.

@@ -25,6 +25,11 @@ def dashboard(
 
     total_vehicles = len(vehicles)
     total_purchases = len(purchases)
+    total_stock = sum(vehicle.quantity for vehicle in vehicles)
+    total_value = sum(
+    vehicle.price * vehicle.quantity
+    for vehicle in vehicles
+)
 
     total_revenue = 0
 
@@ -71,6 +76,10 @@ def dashboard(
         "total_vehicles": total_vehicles,
 
         "total_purchases": total_purchases,
+
+        "total_stock": total_stock,
+
+        "total_value": total_value,
 
         "low_stock": len(low_stock),
 
