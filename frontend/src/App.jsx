@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -7,24 +7,20 @@ import PurchaseHistory from "./pages/PurchaseHistory";
 
 function App() {
   return (
-    <BrowserRouter>
+    <Routes>
 
-      <Routes>
+      <Route path="/" element={<Login />} />
 
-        <Route path="/" element={<Login />} />
+      <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/inventory" element={<Inventory />} />
 
-        <Route path="/inventory" element={<Inventory />} />
+      <Route
+        path="/purchase-history"
+        element={<PurchaseHistory />}
+      />
 
-        <Route
-          path="/purchase-history"
-          element={<PurchaseHistory />}
-        />
-
-      </Routes>
-
-    </BrowserRouter>
+    </Routes>
   );
 }
 
